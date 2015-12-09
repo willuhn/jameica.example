@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.0.xsd"
+        name="jameica.example" version="1.2.0" class="de.willuhn.jameica.example.ExamplePlugin">
+
+  <description>Example Plugin for Jameica</description>
+  <url></url>
+  <homepage>http://www.willuhn.de/products/jameica</homepage>
+  <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
+
+  <!-- Define dependencies to jameica or other plugins -->
+  <requires jameica="1.10+">
+    <!--  <import plugin="hibiscus" version="1.12+" required="false" /> //-->
+  </requires>
+
+  <!-- Define regex wildcards for the classes and jars the classfinder should load -->
+  <classfinder>
+    <include>jameica\.example\.jar</include>
+    <include>.*\.class</include>
+  </classfinder>
+
+  <!-- The content of the following tag is displayed in the menu bar. //-->
+  <menu>
+
+    <!-- 
+      
+      Every item must have a "name" and an "action" attribute.
+      the class defined in the attribute "action" has to be a java class name
+      which implements from de.willuhn.jameica.gui.Action.
+      
+      Additionally you can specify a shortcut using "CTRL" or "ALT"
+      as modifier key followed by "+" and a single key.
+      
+      Hint: You can create submenus by cascading "item" tags
+      
+      <item name="entry name"
+            action="com.foo.bar.gui.actions.ExampleAction"
+            shortcut="CTRL+E"/>
+      
+    //-->
+    <item name="Example plugin">
+
+
+      <item name="New Project" shortcut="ALT+P" action="de.willuhn.jameica.example.gui.action.ProjectDetail" />
+
+      <!-- use "-" as name to create a separator //-->
+      <item name="-" />
+
+      <item name="About" action="de.willuhn.jameica.example.gui.action.About" />
+    </item>
+  </menu>
+
+  <!-- the content of this tag will appear within the navigation tree on the left hand //-->
+  <navigation>
+
+    <!-- Same procedure as in the menu tag //-->
+
+    <item name="Example Plugin" icon-close="folder.png" icon-open="folder-open.png" action="de.willuhn.jameica.example.gui.action.Welcome">
+      <item name="Projects" icon-close="text-x-generic.png" action="de.willuhn.jameica.example.gui.action.ProjectList" />
+    </item>
+  </navigation>
+
+  <!--
+    Here you can define your service classes. This is typically a
+    database connection. You can list more than one service in this
+    section. By using the depends attribute you can define a startup order
+    for your services. Example:
+    
+    <services>
+    <service name="base-service" depends="" autostart="true" class="BaseService" />
+    <service name="extended-service" depends="base-service" autostart="true" class="ExtendedService" />
+    </services>
+    
+    //-->
+
+  <services>
+    <service name="exampledatabase" depends="" autostart="true" class="de.willuhn.jameica.example.rmi.ExampleDBService" />
+  </services>
+</plugin>
+
