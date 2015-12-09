@@ -20,7 +20,6 @@ import de.willuhn.jameica.example.gui.control.ProjectControl;
 import de.willuhn.jameica.gui.AbstractView;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
-import de.willuhn.jameica.gui.internal.buttons.Back;
 import de.willuhn.jameica.gui.parts.ButtonArea;
 import de.willuhn.jameica.gui.util.ColumnLayout;
 import de.willuhn.jameica.gui.util.Container;
@@ -69,7 +68,6 @@ public class ProjectDetail extends AbstractView
 
     // add some buttons
     ButtonArea buttons = new ButtonArea();
-    buttons.addButton(new Back());
     buttons.addButton(Settings.i18n().tr("New Task"), new TaskDetail(),control.getCurrentObject());
     buttons.addButton(Settings.i18n().tr("Delete"),  	new ProjectDelete(),control.getCurrentObject());
     buttons.addButton(Settings.i18n().tr("Store"),   	new Action()

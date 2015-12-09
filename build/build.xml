@@ -48,7 +48,6 @@
 
 		<property name="src.dir" 					      value="src" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
-    <property name="img.dir"                value="${src.dir}/img" />
 		<property name="lib.dir" 					      value="lib" />
 		<property name="webapps.dir" 			      value="webapps" />
 		<property name="class.dir" 					    value="${project.tmp}/bin" />
@@ -82,9 +81,6 @@
       <fileset dir="${src.dir}">
         <include name="META-INF/**" />
       </fileset>
-    </copy>
-    <copy todir="${class.dir}/img">
-      <fileset dir="${img.dir}" />
     </copy>
   </target>
 
