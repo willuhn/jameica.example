@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
- $Revision: 1.11 $
- $Date: 2010-11-09 17:20:16 $
+ $Revision: 1.4 $
+ $Date: 2010/07/25 23:19:14 $
  $Author: willuhn $
 
  Copyright (c) by willuhn software & services
@@ -12,7 +12,6 @@
 <project basedir=".." default="all" name="All">
 
 
-
   <target name="init" description="inits the build">
 
     <property environment="env" />
@@ -20,7 +19,7 @@
     <buildnumber file="${build.dir}/BUILD" />
     <xmlproperty file="plugin.xml" collapseattributes="true"/>
 
-    <!-- create cvs tag -->
+    <!-- create SCM tag -->
     <propertyfile file="${build.dir}/TAG">
       <entry key="mytag" value="${plugin.version}" />
     </propertyfile>
@@ -32,7 +31,7 @@
     <loadproperties srcFile="${build.dir}/build.properties"/>
 
     <echo message="VERSION: ${plugin.version}" />
-    <echo message="CVS-Tag: ${tag}" />
+    <echo message="TAG    : ${tag}" />
     <echo message="BUILD  : ${build.number}" />
     <echo message="JAVA   : ${java.version}" />
 
@@ -48,12 +47,14 @@
 		<property name="project.zipdir" 			  value="${project.release}/${plugin.name}" />
 
 		<property name="src.dir" 					      value="src" />
-    <property name="sql.dir"                value="sql" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
+    <property name="img.dir"                value="${src.dir}/img" />
 		<property name="lib.dir" 					      value="lib" />
+		<property name="webapps.dir" 			      value="webapps" />
 		<property name="class.dir" 					    value="${project.tmp}/bin" />
 
 		<available file="${lib.dir}"     type="dir" property="havelib" />
+		<available file="${webapps.dir}" type="dir" property="havewebapps" />
 
 		<path id="compilepath">
 			<pathelement path="${define.compilepath}" />
@@ -63,15 +64,6 @@
 		</path>
 
 	</target>
-
-
-
-	<target depends="init" name="cvs" description="performs cvs update">
-		<exec executable="cvs" failonerror="true" dir="${basedir}">
-			<arg line="update -dP" />
-		</exec>
-	</target>
-
 
 
 	<target depends="init" name="compile" description="compiles everything">
@@ -91,36 +83,47 @@
         <include name="META-INF/**" />
       </fileset>
     </copy>
+    <copy todir="${class.dir}/img">
+      <fileset dir="${img.dir}" />
+    </copy>
   </target>
 
 
-	<target depends="compile" name="cvstag" description="tags the source in the CVS">
 
-		<exec executable="cvs" failonerror="true" dir="${basedir}">
-			<arg line="tag ${tag}" />
+	<target depends="compile" name="tag" description="tags the source in the scm">
+
+		<exec executable="git" failonerror="true" dir="${basedir}">
+			<arg line="tag -m ${tag} ${tag}" />
 		</exec>
+
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="push origin ${tag}" />
+    </exec>
 
 	</target>
 
 
 
-	<!-- add libs only if they exist -->
+	<!-- Libs nur dann hinzufuegen, wenn sie existieren -->
 	<target name="addlib" if="havelib">
 		<mkdir dir="${project.zipdir}/lib" />
 		<copy todir="${project.zipdir}/lib">
 			<fileset dir="${lib.dir}" />
 		</copy>
 	</target>
+	<target name="addwebapps" if="havewebapps">
+		<mkdir dir="${project.zipdir}/webapps" />
+		<copy todir="${project.zipdir}/webapps">
+			<fileset dir="${webapps.dir}" />
+		</copy>
+	</target>
+
+
 
 	<target depends="compile" name="jar" description="generates the jar file">
 
 		<mkdir dir="${project.release}" />
 		<mkdir dir="${project.zipdir}" />
-
-    <mkdir dir="${project.zipdir}/sql" />
-    <copy todir="${project.zipdir}/sql">
-      <fileset dir="${sql.dir}" />
-    </copy>
 
 		<tstamp/>
 		<jar destfile="${project.zipdir}/${define.jarfilename}">
@@ -136,10 +139,12 @@
 		</jar>
 
 	  <antcall target="addlib"/>
+		<antcall target="addwebapps"/>
 
     <copy file="plugin.xml" todir="${project.zipdir}" />
+		<copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
 
-		<!-- create zip file -->
+		<!-- Jetzt muessen wir noch das ZIP-File erzeugen -->
 		<zip destfile="${project.release}/${define.zipfilename}">
 			<fileset dir="${project.release}">
 				<include name="${plugin.name}" />
@@ -148,6 +153,7 @@
 		</zip>
 
 	</target>
+
 
 
 	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
@@ -160,7 +166,7 @@
         <include name="plugin.xml" />
 				<include name="${lib.dir}/**" />
 				<include name="${src.dir}/**" />
-        <include name="${sql.dir}/**" />
+        <include name="${webapps.dir}/**" />
 				<include name="${build.dir}/**" />
 				<exclude name="${build.dir}/BUILD" />
 			</fileset>
@@ -205,7 +211,36 @@
 	</target>
 
 
-	<target depends="init,compile,cvstag,jar,javadoc,src,clean" description="build an official release" name="all" />
-	<target depends="init,compile,jar,javadoc,src,clean" description="build inofficial release" name="fast" />
+
+  <target name="sign" description="signs the jar/zip file">
+		<checksum file="${project.release}/${define.zipfilename}" />
+		<checksum file="${project.release}/${define.srcfilename}" />
+		<echo message="Creating PGP signatures" />
+		<exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
+		</exec>
+		<exec executable="gpg" failonerror="true" timeout="60000">
+      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
+		</exec>
+	</target>
+
+
+
+	<target depends="init,compile,tag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
+
+
+
+	<target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
+
+
+
+	<target depends="init,compile,jar,javadoc,src" description="build nightly build" name="nightly">
+		<mkdir dir="${project.nightly}" />
+
+		<copy file="${project.release}/${define.zipfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}-nightly.zip" />
+		<copy file="${project.release}/${define.srcfilename}" tofile="${project.nightly}/${plugin.name}-${plugin.version}-nightly.src.zip" />
+
+		<delete dir="${project.release}" />
+	</target>
 
 </project>
