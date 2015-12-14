@@ -49,10 +49,12 @@
 		<property name="src.dir" 					      value="src" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
 		<property name="lib.dir" 					      value="lib" />
+    <property name="sql.dir"                value="sql" />
 		<property name="webapps.dir" 			      value="webapps" />
 		<property name="class.dir" 					    value="${project.tmp}/bin" />
 
 		<available file="${lib.dir}"     type="dir" property="havelib" />
+    <available file="${sql.dir}"     type="dir" property="havesql" />
 		<available file="${webapps.dir}" type="dir" property="havewebapps" />
 
 		<path id="compilepath">
@@ -107,6 +109,12 @@
 			<fileset dir="${lib.dir}" />
 		</copy>
 	</target>
+  <target name="addsql" if="havesql">
+    <mkdir dir="${project.zipdir}/sql" />
+    <copy todir="${project.zipdir}/sql">
+      <fileset dir="${sql.dir}" />
+    </copy>
+  </target>
 	<target name="addwebapps" if="havewebapps">
 		<mkdir dir="${project.zipdir}/webapps" />
 		<copy todir="${project.zipdir}/webapps">
@@ -135,6 +143,7 @@
 		</jar>
 
 	  <antcall target="addlib"/>
+    <antcall target="addsql"/>
 		<antcall target="addwebapps"/>
 
     <copy file="plugin.xml" todir="${project.zipdir}" />
@@ -161,6 +170,7 @@
 				<include name=".classpath" />
         <include name="plugin.xml" />
 				<include name="${lib.dir}/**" />
+        <include name="${sql.dir}/**" />
 				<include name="${src.dir}/**" />
         <include name="${webapps.dir}/**" />
 				<include name="${build.dir}/**" />

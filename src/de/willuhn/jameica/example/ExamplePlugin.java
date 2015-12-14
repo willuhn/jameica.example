@@ -20,6 +20,7 @@ import de.willuhn.jameica.plugin.Manifest;
 import de.willuhn.jameica.plugin.PluginResources;
 import de.willuhn.jameica.plugin.Version;
 import de.willuhn.jameica.system.Application;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -72,6 +73,7 @@ public class ExamplePlugin extends AbstractPlugin
     }
     catch (Exception e)
     {
+      Logger.error("unable to create database",e);
     	throw new ApplicationException("error while installing plugin",e);
     }
   }
