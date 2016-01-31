@@ -48,6 +48,7 @@
 
 		<property name="src.dir" 					      value="src" />
 		<property name="lang.dir" 					    value="${src.dir}/lang" />
+    <property name="img.dir"                value="${src.dir}/img" />
     <property name="help.dir"               value="${src.dir}/help" />
 		<property name="lib.dir" 					      value="lib" />
     <property name="sql.dir"                value="sql" />
