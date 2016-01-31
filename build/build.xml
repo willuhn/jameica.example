@@ -84,6 +84,15 @@
         <include name="META-INF/**" />
       </fileset>
     </copy>
+    <copy todir="${class.dir}/help">
+      <fileset dir="${help.dir}" />
+    </copy>
+    <copy todir="${class.dir}/img">
+      <fileset dir="${img.dir}" />
+    </copy>
+    <copy todir="${class.dir}/lang">
+      <fileset dir="${lang.dir}" />
+    </copy>
   </target>
 
 
