@@ -3,7 +3,6 @@ plugins {
     id 'eclipse'
     id 'idea'
 }
-apply from: "${rootProject.rootDir}/eclipse_swt.gradle"
 
 group 'de.your.name'
 version '0.1-SNAPSHOT'
@@ -33,10 +32,9 @@ dependencies {
     implementation project(':lib:util')
     implementation project(':lib:datasource')
 
-    // Eclipse SWT ist plattformabhängig
-    implementation group: 'org.eclipse.platform', name: "org.eclipse.swt.${swtPlatform}", version: swtVersion
+    implementation swt.platform
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation libs.junit
 }
 
 sourceSets {
