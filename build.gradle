@@ -1,0 +1,54 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+}
+apply from: "${rootProject.rootDir}/eclipse_swt.gradle"
+
+group 'de.your.name'
+version '0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'ISO-8859-1'
+}
+tasks.withType(Javadoc) {
+    options.encoding = 'ISO-8859-1'
+}
+
+// solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner
+buildDir = file("./build/gradle/")
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':jameica')
+    implementation project(':lib:util')
+    implementation project(':lib:datasource')
+
+    // Eclipse SWT ist plattformabhängig
+    implementation group: 'org.eclipse.platform', name: "org.eclipse.swt.${swtPlatform}", version: swtVersion
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['test']
+        }
+    }
+}
