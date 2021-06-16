@@ -1,7 +1,7 @@
 plugins {
-    id 'java-library'
-    id 'eclipse'
-    id 'idea'
+    id 'my.java-library-conventions'
+    id 'my.java-oldschool-project-structure'
+    id 'my.encoding.8859-1'
 }
 
 group 'de.your.name'
@@ -13,40 +13,16 @@ java {
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'ISO-8859-1'
-}
-tasks.withType(Javadoc) {
-    options.encoding = 'ISO-8859-1'
-}
-
 // solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner
 buildDir = file("./build/gradle/")
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation project(':jameica')
-    implementation project(':lib:util')
-    implementation project(':lib:datasource')
+    // Dependencies appearing in the api configurations will be transitively
+    // exposed to consumers of the library, and as such will appear on the
+    // compile classpath of consumers.
+    api project(':jameica')
+    api project(':lib:util')
+    api project(':lib:datasource')
 
     implementation swt.platform
-
-    testImplementation libs.junit
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ['test']
-        }
-    }
 }
