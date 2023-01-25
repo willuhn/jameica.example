@@ -2,12 +2,12 @@
 
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.0.xsd"
+        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.5.xsd"
         name="jameica.example" version="1.2.0" class="de.willuhn.jameica.example.ExamplePlugin">
 
   <description>Example Plugin for Jameica</description>
-  <url></url>
-  <homepage>http://www.willuhn.de/products/jameica</homepage>
+  <url>https://www.example.com/releases/my-plugin.zip</url>
+  <homepage validate="true">https://www.example.com</homepage>
   <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
 
   <!-- Define dependencies to jameica or other plugins -->
