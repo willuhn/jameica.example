@@ -1,0 +1,28 @@
+plugins {
+    id 'my.java-library-conventions'
+    id 'my.java-oldschool-project-structure'
+    id 'my.encoding.8859-1'
+}
+
+group 'de.your.name'
+version '0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+// solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner
+buildDir = file("./build/gradle/")
+
+dependencies {
+    // Dependencies appearing in the api configurations will be transitively
+    // exposed to consumers of the library, and as such will appear on the
+    // compile classpath of consumers.
+    api project(':jameica')
+    api project(':lib:util')
+    api project(':lib:datasource')
+
+    implementation swt.platform
+}
