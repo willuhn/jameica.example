@@ -148,7 +148,6 @@
 				<include name="${src.dir}/**" />
         <include name="${webapps.dir}/**" />
 				<include name="${build.dir}/**" />
-				<exclude name="${build.dir}/BUILD" />
 			</fileset>
 		</copy>
 		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
